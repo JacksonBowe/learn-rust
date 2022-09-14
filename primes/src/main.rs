@@ -1,37 +1,35 @@
+use std::time::Instant;
 
+mod primes;
 
 fn main() {
-    let n: i32 = 100;
-    println!("Running with n = {}", n);
-    
-    // Find all primes of n
-    let p = primes(n);
+    // let n: i32 = 100;
+    for n in [10, 100, 1000, 10000, 100000] {
+        println!("Running with n = {}", n);
+        
+        // Find all primes of n
+        // let p = primes::quotient(n);
 
-    // How many primes
-    println!("Number of primes: {}", p.len());
+        // // How many primes
+        // println!("Number of primes: {}", p.len());
 
-    // Largest prime
-    println!("Largest prime: {:?}", p.iter().max().unwrap());
+        // // Largest prime
+        // println!("Largest prime: {:?}", p.iter().max().unwrap());
 
-    // Primes
-    println!("Primes: {:?}", p)
+        // // Primes
+        // println!("Primes: {:?}", p)
 
-}
+        let tick_1 = Instant::now();
+        primes::quotient(n);
+        let toc_1 = tick_1.elapsed();
 
-fn primes(n: i32) -> Vec<i32> {
-    // Print n
-    let mut found: Vec<i32> = Vec::new();
+        let tick_2 = Instant::now();
+        primes::seive(n);
+        let toc_2 = tick_2.elapsed();
 
-    for i in 2..n+1  {
-        let check: Vec<i32> = found.iter().map(|x| i % x).collect();
-
-        if check.contains(&0) {
-            continue;
-        }
-        // println!("found prime: {}", i);
-        found.push(i);
+        println!("Time to run quotient: {:.2?}", toc_1);
+        println!("Time to run seive: {:.2?}", toc_2);
+        println!();
     }
 
-    // println!("Primes: {:?}", found);
-    return found
 }
