@@ -9,7 +9,7 @@ fn main() {
         
         // Find all primes of n
         // let p = primes::quotient(n);
-
+        
         // // How many primes
         // println!("Number of primes: {}", p.len());
 
