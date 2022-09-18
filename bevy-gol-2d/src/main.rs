@@ -52,6 +52,7 @@ struct UpdateTimer(Timer);
 fn update_board(time: Res<Time>, mut timer: ResMut<UpdateTimer>, mut q: Query<&mut Board>) {
     if timer.0.tick(time.delta()).just_finished() {
         for mut board in q.iter_mut() {
+            let mut clone = board.0.clone();
             // println!("{:?}", board.0)
             for i in 0..board.0.len() {
                 for j in 0..board.0.len() {
@@ -74,15 +75,16 @@ fn update_board(time: Res<Time>, mut timer: ResMut<UpdateTimer>, mut q: Query<&m
                     }
 
                     if alive_neighbours < 2 {
-                        board.0[i][j] = false
+                        clone[i][j] = false
                     } else if alive_neighbours > 2 {
-                        board.0[i][j] = true
+                        clone[i][j] = true
                     } else {
-                        board.0[i][j] = false
+                        clone[i][j] = false
                     }
                     
                 }
             }
+            board.0 = clone.to_vec()
         }
     }
 }
