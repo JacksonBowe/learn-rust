@@ -19,7 +19,7 @@ fn main() {
 }
 
 #[derive(Component, Debug)]
-struct Board(Vec<Vec<bool>>);
+struct Board(Vec<Vec<Cell>>);
 
 #[derive(Component, Clone, Debug, Copy)]
 struct Cell {
@@ -31,17 +31,19 @@ fn setup_board(mut commands: Commands) {
     commands.spawn_bundle(Camera2dBundle::default());
 
     // Create the board
-    let mut initial = vec![vec![false;10]; 10];
-    initial[5][5] = true;
-    initial[6][6] = true;
-    initial[6][7] = true;
-    initial[7][6] = true;
-    initial[7][7] = true;
-    initial[8][8] = true;
+    let mut initial = vec![vec![Cell { alive: false} ;10]; 10];
+    initial[5][5].alive = true;
+    initial[6][6].alive = true;
+    initial[6][7].alive = true;
+    initial[7][6].alive = true;
+    initial[7][7].alive = true;
+    initial[8][8].alive = true;
 
     let board = commands.spawn()
         .insert(Board(initial))
         .id();
+
+    
 
     println!("{:?}", board);
 }
@@ -59,27 +61,27 @@ fn update_board(time: Res<Time>, mut timer: ResMut<UpdateTimer>, mut q: Query<&m
                     
                     // Get neighbours
                     let neighbours = [
-                        if i > 0                                      { board.0[i-1][j] } else { false },     // Left
-                        if i > 0 && j > 0                             { board.0[i-1][j-1] } else { false },   // Left - Up
-                        if j > 0                                      { board.0[i][j-1] } else { false },     // Up
-                        if i < board.0.len()-1 && j > 0               { board.0[i+1][j-1] } else { false },   // Right - Up
-                        if i < board.0.len()-1                        { board.0[i+1][j] } else { false },     // Right
-                        if i < board.0.len()-1 && j < board.0.len()-1 { board.0[i+1][j+1] } else { false },   // Right - Down
-                        if j < board.0.len()-1                        { board.0[i][j+1] } else { false },     // Down
-                        if i > 0 && j < board.0.len()-1               { board.0[i-1][j+1] } else { false }    // Left - Down
+                        if i > 0                                      { board.0[i-1][j].alive } else { false },     // Left
+                        if i > 0 && j > 0                             { board.0[i-1][j-1].alive } else { false },   // Left - Up
+                        if j > 0                                      { board.0[i][j-1].alive } else { false },     // Up
+                        if i < board.0.len()-1 && j > 0               { board.0[i+1][j-1].alive } else { false },   // Right - Up
+                        if i < board.0.len()-1                        { board.0[i+1][j].alive } else { false },     // Right
+                        if i < board.0.len()-1 && j < board.0.len()-1 { board.0[i+1][j+1].alive } else { false },   // Right - Down
+                        if j < board.0.len()-1                        { board.0[i][j+1].alive } else { false },     // Down
+                        if i > 0 && j < board.0.len()-1               { board.0[i-1][j+1].alive } else { false }    // Left - Down
                     ];
 
                     let alive_neighbours = neighbours.iter().filter(|&n| *n == true).count();
-                    if board.0[i][j] {
+                    if board.0[i][j].alive {
                         println!("Alive: ({},{}) - n={:?}", i, j, &alive_neighbours);
                     }
 
                     if alive_neighbours < 2 {
-                        clone[i][j] = false
+                        clone[i][j].alive = false
                     } else if alive_neighbours > 2 {
-                        clone[i][j] = true
+                        clone[i][j].alive = true
                     } else {
-                        clone[i][j] = false
+                        clone[i][j].alive = false
                     }
                     
                 }
@@ -90,5 +92,5 @@ fn update_board(time: Res<Time>, mut timer: ResMut<UpdateTimer>, mut q: Query<&m
 }
 
 fn update_cells(mut commands: Commands, time: Res<Time>, mut timer: ResMut<UpdateTimer>, mut meshes: ResMut<Assets<Mesh>>, mut materials: ResMut<Assets<ColorMaterial>>, mut q: Query<&mut Board>) {
-    
+    for mut board
 }
